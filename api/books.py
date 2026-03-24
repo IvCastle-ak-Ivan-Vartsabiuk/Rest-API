@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
 from typing import Optional
 from uuid import UUID
 
@@ -7,14 +7,17 @@ from services import book_service
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
-# 1. GET all
+
+# 1. GET all (з пагінацією)
 @router.get("/")
 async def get_books(
     status: Optional[str] = None,
     author: Optional[str] = None,
-    sort_by: Optional[str] = None
+    sort_by: Optional[str] = None,
+    limit: int = Query(10, ge=1),
+    offset: int = Query(0, ge=0)
 ):
-    return await book_service.get_books(status, author, sort_by)
+    return await book_service.get_books(status, author, sort_by, limit, offset)
 
 
 # 2. GET by ID

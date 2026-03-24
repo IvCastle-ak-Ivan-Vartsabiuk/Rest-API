@@ -1,16 +1,46 @@
-from models.book_model import books_db
-def get_all_books():
-    return books_db
+from models.book_model import Book
+from db.database import SessionLocal
+
+
+def get_books(status=None, author=None, sort_by=None, limit=10, offset=0):
+    db = SessionLocal()
+
+    query = db.query(Book)
+
+    if status:
+        query = query.filter(Book.status == status)
+
+    if author:
+        query = query.filter(Book.author == author)
+
+    if sort_by == "title":
+        query = query.order_by(Book.title)
+    elif sort_by == "year":
+        query = query.order_by(Book.year)
+
+    return query.offset(offset).limit(limit).all()
+
 
 def get_book_by_id(book_id):
-    return next((b for b in books_db if str(b["id"]) == str(book_id)), None)
+    db = SessionLocal()
+    return db.query(Book).filter(Book.id == book_id).first()
 
-def add_book(book: dict):
-    books_db.append(book)
+
+def create_book(data: dict):
+    db = SessionLocal()
+    book = Book(**data)
+    db.add(book)
+    db.commit()
+    db.refresh(book)
     return book
 
+
 def delete_book(book_id):
-    global books_db
-    initial_len = len(books_db)
-    books_db = [b for b in books_db if str(b["id"]) != str(book_id)]
-    return len(books_db) < initial_len
+    db = SessionLocal()
+    book = db.query(Book).filter(Book.id == book_id).first()
+
+    if book:
+        db.delete(book)
+        db.commit()
+
+    return True  # ідемпотентність

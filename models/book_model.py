@@ -1,3 +1,15 @@
-from typing import List, Dict
+from sqlalchemy import Column, String, Integer
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
-books_db: List[Dict] = []
+from db.base import Base
+
+class Book(Base):
+    __tablename__ = "books"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String)
+    author = Column(String)
+    description = Column(String)
+    status = Column(String)
+    year = Column(Integer)
