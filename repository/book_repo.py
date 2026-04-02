@@ -2,7 +2,7 @@ from models.book_model import Book
 from db.database import SessionLocal
 
 
-def get_books(status=None, author=None, sort_by=None, limit=10, offset=0):
+def get_books(status=None, author=None, sort_by=None, limit=10, cursor=None):
     db = SessionLocal()
 
     query = db.query(Book)
@@ -13,12 +13,17 @@ def get_books(status=None, author=None, sort_by=None, limit=10, offset=0):
     if author:
         query = query.filter(Book.author == author)
 
+    if cursor is not None:
+        query = query.filter(Book.id > cursor)
+
     if sort_by == "title":
         query = query.order_by(Book.title)
     elif sort_by == "year":
         query = query.order_by(Book.year)
+    else:
+        query = query.order_by(Book.id)
 
-    return query.offset(offset).limit(limit).all()
+    return query.limit(limit).all()
 
 
 def get_book_by_id(book_id):

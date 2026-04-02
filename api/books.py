@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Query
 from typing import Optional
 from uuid import UUID
 
-from schemas.books import BookCreate
+from schemas.book_schema import BookCreate
 from services import book_service
 
 router = APIRouter(prefix="/books", tags=["Books"])
@@ -15,9 +15,9 @@ async def get_books(
     author: Optional[str] = None,
     sort_by: Optional[str] = None,
     limit: int = Query(10, ge=1),
-    offset: int = Query(0, ge=0)
+    cursor: Optional[UUID] = None
 ):
-    return await book_service.get_books(status, author, sort_by, limit, offset)
+    return await book_service.get_books(status, author, sort_by, limit, cursor)
 
 
 # 2. GET by ID
