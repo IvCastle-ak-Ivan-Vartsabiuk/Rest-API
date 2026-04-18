@@ -1,18 +1,17 @@
-from repository import book_repo_mongo
+from repository import book_repo
 
 
-async def get_books(db, status=None, author=None, sort_by=None, limit=10, offset=0):
-    return book_repo_mongo.get_books(db, status, author, sort_by, limit, offset)
+def get_books(limit=10, offset=0):
+    return book_repo.get_books(limit=limit, offset=offset)
 
 
-async def get_book(db, book_id):
-    return book_repo_mongo.get_book_by_id(db, book_id)
+def get_book(book_id):
+    return book_repo.get_book_by_id(book_id)
 
 
-async def create_book(db, book_data):
-    data = book_data.model_dump()
-    return book_repo_mongo.create_book(db, data)
+def create_book(data):
+    return book_repo.create_book(data)
 
 
-async def remove_book(db, book_id):
-    return book_repo_mongo.delete_book(db, book_id)
+def remove_book(book_id):
+    return book_repo.delete_book(book_id)

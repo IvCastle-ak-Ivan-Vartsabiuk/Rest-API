@@ -2,7 +2,7 @@ from models.book_model import Book
 from db.database import SessionLocal
 
 
-def get_books(status=None, author=None, sort_by=None, limit=10, cursor=None):
+def get_books(status=None, author=None, sort_by=None, limit=10, offset=0, cursor=None):
     db = SessionLocal()
 
     query = db.query(Book)
@@ -23,7 +23,7 @@ def get_books(status=None, author=None, sort_by=None, limit=10, cursor=None):
     else:
         query = query.order_by(Book.id)
 
-    return query.limit(limit).all()
+    return query.offset(offset).limit(limit).all()
 
 
 def get_book_by_id(book_id):
