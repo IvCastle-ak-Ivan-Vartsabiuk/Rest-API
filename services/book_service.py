@@ -1,27 +1,18 @@
-from repository import book_repo
+from repository import book_repo_mongo
 
 
-async def get_books(status=None, author=None, sort_by=None, limit=10, cursor=None):
-    books = book_repo.get_books(status, author, sort_by, limit, cursor)
-
-    next_cursor = None
-    if books:
-        next_cursor = books[-1].id
-
-    return {
-        "data": books,
-        "next_cursor": next_cursor
-    }
+async def get_books(db, status=None, author=None, sort_by=None, limit=10, offset=0):
+    return book_repo_mongo.get_books(db, status, author, sort_by, limit, offset)
 
 
-async def get_book(book_id):
-    return book_repo.get_book_by_id(book_id)
+async def get_book(db, book_id):
+    return book_repo_mongo.get_book_by_id(db, book_id)
 
 
-async def create_book(book_data):
+async def create_book(db, book_data):
     data = book_data.model_dump()
-    return book_repo.create_book(data)
+    return book_repo_mongo.create_book(db, data)
 
 
-async def remove_book(book_id):
-    return book_repo.delete_book(book_id)
+async def remove_book(db, book_id):
+    return book_repo_mongo.delete_book(db, book_id)
