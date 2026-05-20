@@ -1,0 +1,85 @@
+openapi: 3.0.0
+
+info:
+  title: Library API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:4010
+
+paths:
+  /books:
+    get:
+      summary: Get books
+      responses:
+        '200':
+          description: List of books
+          content:
+            application/json:
+              example:
+                - id: "1"
+                  title: "Harry Potter"
+                  author: "J.K. Rowling"
+                  status: "available"
+                  year: 2001
+
+    post:
+      summary: Create book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              title: "New Book"
+              author: "Author"
+              status: "available"
+              year: 2024
+
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example:
+                id: "2"
+                title: "New Book"
+                author: "Author"
+                status: "available"
+                year: 2024
+
+  /books/{book_id}:
+    get:
+      summary: Get book by ID
+
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Book
+          content:
+            application/json:
+              example:
+                id: "1"
+                title: "Harry Potter"
+                author: "J.K. Rowling"
+                status: "available"
+                year: 2001
+
+    delete:
+      summary: Delete book
+
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '204':
+          description: Deleted

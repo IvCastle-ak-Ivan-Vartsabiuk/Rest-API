@@ -1,5 +1,5 @@
 services:
-  db:
+  postgres:
     image: postgres:15
     container_name: postgres_db
     restart: always
@@ -10,9 +10,27 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:7
+    container_name: redis_db
+    restart: always
+    ports:
+      - "6379:6379"
+
   api:
     build: .
+    container_name: fastapi_app
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - postgres
+      - redis
+
+  prism:
+    image: stoplight/prism:4
+    container_name: prism_mock
+    ports:
+      - "4010:4010"
+    volumes:
+      - ./openapi.yaml:/tmp/openapi.yaml
+    command: mock -h 0.0.0.0 /tmp/openapi.yaml
