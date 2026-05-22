@@ -34,3 +34,14 @@ services:
     volumes:
       - ./openapi.yaml:/tmp/openapi.yaml
     command: mock -h 0.0.0.0 /tmp/openapi.yaml
+
+  locust:
+    image: locustio/locust
+    container_name: locust_test
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --host http://api:8000
+    depends_on:
+      - api
